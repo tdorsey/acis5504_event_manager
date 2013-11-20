@@ -1,9 +1,11 @@
+import datetime
+
 from event_manager.models import *
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.loader import get_template
 from django.template import Context
 from django.http import HttpResponse
-import datetime
+
 
 def index(request):
     recent_events = Event.objects.all().order_by('date') [:5]	
@@ -14,8 +16,9 @@ def index(request):
 
 def event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
-    players_in_event =  Registration.objects.filter(event__in=(event_id))
+    registrations = Registration.objects.filter(event__in=(event_id))
+    players = Player.objects.filter(player_id__in(registrations.player))
     t = get_template('event.html')
-    html = t.render(Context({'event': event, 'players' : players_in_event }))
+    html = t.render(Context({'event': event, 'players': players}))
     return HttpResponse(html)	
 
