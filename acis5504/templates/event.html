@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+{% DEBUG %}
 	<meta charset="utf-8" />
 	<title>Onextrapixel - Responsive Web Design Template</title>
 	<link rel="stylesheet" type="text/css" href="../../../static/reset.css" />
@@ -57,10 +58,9 @@ href="#">Continue Reading &rarr;</a></p>
 				<aside class="sidebar">
 					<h4><a href="#">Recent Events</a></h4>
 					{% if players %}
-    						<ul>
+						<ul>
     					{% for player in players %}
-     					   <li><a href="/event_manager/player/{{ player.player_id }}/">{{ player.first_name }} {{ player.last_name 
-}}</a></li>
+     					   <li><a href="/event_manager/player/{{ p.player_id }}/">{{ p.points }}</a></li>
     					{% endfor %}
     						</ul>
 					{% else %}

@@ -1,9 +1,12 @@
 # Create your models here.
 from django.db import models
+from django.contrib import admin
 
 
 class Person(models.Model):
-	player_id = models.AutoField('Player ID', primary_key=True)
+	def __unicode__(self):
+		return self.pk
+	person_id = models.AutoField('Person ID', primary_key=True)
 	first_name = models.CharField(max_length=200)
 	last_name = models.CharField(max_length=200)
 	dob = models.DateField('Date of Birth')
@@ -16,23 +19,32 @@ class Person(models.Model):
 	active_since = models.DateField('Join Date')
 	list_display = ('first_name', 'last_name')
 	class Meta:
-		verbose_name_plural = "People"	
-	
-class Judge(Person):
-	level = models.PositiveIntegerField()
-	certified_until = models.DateField('Certified Until')
+		abstract = True 
 
 class Pro_Level(models.Model):
+	def __unicode__(self):
+       		return self.pk  
 	level = models.AutoField('Pro Level', primary_key=True)
 	description = models.CharField(max_length=500)
 
 class Player(Person):
+	def __unicode__(self):
+		return self.pk  
 	rank = models.PositiveIntegerField(blank=True, null=True)
 	points = models.PositiveIntegerField(default=0)
 	lifetime_points = models.PositiveIntegerField(default=0)
-	pro_level = models.ForeignKey(Pro_Level, blank=True, null=True)		
+	pro_level = models.ForeignKey(Pro_Level, blank=True, null=True)
+	
+class Judge(models.Model):
+	def __unicode__(self):
+		return self.pk  
+	player = models.OneToOneField(Player)
+	level = models.PositiveIntegerField()
+	certified_until = models.DateField('Certified Until')
 
 class Event_Level(models.Model):
+	def __unicode__(self):
+		return self.pk  
 	level = models.IntegerField('Rules Enforcement Level', primary_key=True)
 	description = models.CharField(max_length=200)
 	points_multiplier = models.PositiveIntegerField()
@@ -40,6 +52,8 @@ class Event_Level(models.Model):
 	class Meta:
         	verbose_name_plural = "Event Levels"
 class Event(models.Model):
+	def __unicode__(self):
+		return self.pk  
 	event_id = models.AutoField('Event ID', primary_key=True)
 	description = models.CharField(max_length=500)
 	date = models.DateField()
@@ -51,12 +65,16 @@ class Event(models.Model):
 	judges = models.ManyToManyField(Judge, related_name='floor_judge', blank=True, null=True)
 
 class Registration(models.Model):
+	def __unicode__(self):
+		return self.pk  
 	event = models.ForeignKey(Event)
 	player = models.ForeignKey(Player)
 	dropped = models.NullBooleanField(blank=True, null=True)
 	dropped_round = models.IntegerField(blank=True, null=True)
 
 class Match(models.Model):
+	def __unicode__(self):
+		return self.pk  
 	match_id = models.AutoField('Match ID', primary_key=True)
 	event = models.ForeignKey(Event)
 	round = models.IntegerField()	
@@ -67,6 +85,8 @@ class Match(models.Model):
 	class Meta:
         	verbose_name_plural = "Matches"	
 class Standing(models.Model):
+	def __unicode__(self):
+		return self.pk  
 	player = models.ForeignKey(Player)
 	event = models.ForeignKey(Event)
 	ranking = models.IntegerField()
