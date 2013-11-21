@@ -3,3 +3,4 @@
 *.pyc
 local_settings.py
 acis5504/event_manager/migrations
+acis5504/acis5504/settings.py
