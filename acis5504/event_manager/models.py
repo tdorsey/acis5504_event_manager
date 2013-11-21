@@ -15,6 +15,8 @@ class Person(models.Model):
 	country = models.CharField(max_length=2)
 	banned_until = models.DateField('Banned Until', blank=True, null=True)
 	active_since = models.DateField('Join Date')
+	def __unicode__(self):
+        	return u'%s %s' % (self.first_name, self.last_name)
 	class Meta:
 		abstract = True 
 
@@ -25,7 +27,6 @@ class Pro_Level(models.Model):
 		verbose_name_plural = "Pro Levels"
 class Pro_Level_Admin(admin.ModelAdmin):
 	list_display = ('level', 'description')
-
 class Player(Person):
 	rank = models.PositiveIntegerField(blank=True, null=True)
 	points = models.PositiveIntegerField(default=0)
@@ -69,7 +70,8 @@ class Event(models.Model):
 	format = models.CharField(max_length=50)
 	head_judge = models.ForeignKey(Judge, related_name='head_judge')
 	judges = models.ManyToManyField(Judge, related_name='floor_judge', blank=True, null=True)
-
+	def __unicode__(self):
+		return u'%s %s' % (self.date, self.description)
 class EventAdmin(admin.ModelAdmin):
     list_display = ('event_id', 'date','description')
 

@@ -15,7 +15,6 @@ def index(request):
 
 def event(request, event_id):
     players = []
-    winner = 'j00'	
     event = get_object_or_404(Event, pk=event_id)
     registration = Registration.objects.filter(event__in=(event_id))
     current_registrations = registration.prefetch_related('player')
