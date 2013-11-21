@@ -1,16 +1,11 @@
 from django.contrib import admin
-from event_manager.models import Event
-from event_manager.models import Player
-from event_manager.models import Judge
-from event_manager.models import Match
-from event_manager.models import Registration
-from event_manager.models import Standing
-from event_manager.models import Event_Level
+from event_manager.models import *
 
-admin.site.register(Event)
-admin.site.register(Player)
-admin.site.register(Judge)
-admin.site.register(Match)
-admin.site.register(Registration)
-admin.site.register(Standing)
-admin.site.register(Event_Level)
+admin.site.register(Event, EventAdmin)
+admin.site.register(Player, PlayerAdmin)
+admin.site.register(Judge, JudgeAdmin)
+admin.site.register(Match, MatchAdmin)
+admin.site.register(Registration, RegistrationAdmin)
+admin.site.register(Standing, StandingAdmin)
+admin.site.register(Event_Level, Event_Level_Admin)
+admin.site.register(Pro_Level, Pro_Level_Admin)

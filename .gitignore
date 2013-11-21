@@ -2,3 +2,4 @@
 *.pot
 *.pyc
 local_settings.py
+acis5504/event_manager/migrations
