@@ -46,6 +46,8 @@ class Judge(models.Model):
 	def Judge(self):
 		p = self.player	
 		return "{0}, {1} - {2}".format(p.last_name, p.first_name, p.person_id)  
+	def __unicode__(self):
+		return self.Judge()
 	player = models.OneToOneField(Player)
 	level = models.PositiveIntegerField()
 	certified_until = models.DateField('Certified Until')
@@ -79,6 +81,18 @@ class Event(models.Model):
 	judges = models.ManyToManyField(Judge, related_name='floor_judge', blank=True, null=True)
 	def __unicode__(self):
 		return u'%s %s' % (self.date, self.description)
+#Doing all this work after super.save is equivalent to a post_save event
+# See http://www.martin-geber.com/thought/2007/10/29/django-signals-vs-custom-save-method/
+	def save(self, *args, **kwargs):
+		super(Event, self).save()	
+		i = 1
+		while i <=  self.rounds:
+			Round.objects.get_or_create(event=self, number = i)
+			i +=1 
+class Round(models.Model):
+        number = models.IntegerField()
+        event = models.ForeignKey(Event)
+
 class EventAdmin(admin.ModelAdmin):
     list_display = ('event_id', 'date','description')
 
