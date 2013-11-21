@@ -18,6 +18,7 @@ def event(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
     registration = Registration.objects.filter(event__in=(event_id))
     current_registrations = registration.prefetch_related('player')
+    matches = Match.objects.filter(event_id)
     for reg in current_registrations:
        players.append(reg.player)
     #hardcode a winner for now
@@ -26,6 +27,7 @@ def event(request, event_id):
     c = Context()
     c['event'] = event
     c['players'] = players
+    c['matches'] = matches	
     c['winner'] = winner
     html = t.render(c)
     return HttpResponse(html)	
