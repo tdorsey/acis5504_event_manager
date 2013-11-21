@@ -17,14 +17,7 @@ def event(request, event_id):
     players = []	
     event = get_object_or_404(Event, pk=event_id)
     registrations = Registration.objects.filter(event__in=(event_id))
-
-    playerQS = Registration.objects.select_related('player').all()    
-    s = ''
-    for p in playerQS:
-       players.append(p)
-       pstring = "Player ID: {}".format(p.player_id)
-       s = s + pstring
-#    return HttpResponse(s)			   
+    players = Player.objects.all()	
     t = get_template('event.html')
     html = t.render(Context({'event': event, 'players': players}))
     return HttpResponse(html)	

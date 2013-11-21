@@ -59,7 +59,7 @@ href="#">Continue Reading &rarr;</a></p>
 					{% if players %}
 						<ul>
     					{% for player in players %}
-     					   <li><a href="/event_manager/player/{{ p.player_id }}/">{{ p.points }}</a></li>
+     					   <li><a href="/event_manager/player/{{ player.player_id }}/">{{ player.first_name }}</a></li>
     					{% endfor %}
     						</ul>
 					{% else %}
