@@ -14,11 +14,20 @@ def index(request):
     return HttpResponse(html)
 
 def event(request, event_id):
-    players = []	
+    players = []
+    winner = 'j00'	
     event = get_object_or_404(Event, pk=event_id)
-    registrations = Registration.objects.filter(event__in=(event_id))
-    players = Player.objects.all()	
+    registration = Registration.objects.filter(event__in=(event_id))
+    current_registrations = registration.prefetch_related('player')
+    for reg in current_registrations:
+       players.append(reg.player)
+    #hardcode a winner for now
+    winner = players[1]
     t = get_template('event.html')
-    html = t.render(Context({'event': event, 'players': players}))
+    c = Context()
+    c['event'] = event
+    c['players'] = players
+    c['winner'] = winner
+    html = t.render(c)
     return HttpResponse(html)	
 
