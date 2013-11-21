@@ -40,7 +40,7 @@
 			<hr/>
 			<div id="latest">
 				<section class="left-col">
-					{% for round in event.rounds %}
+					{% for round in event.rounds.all %}
 						<h3> {{event.round}}</h3><br/>
 					{% endfor %}
 					<p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Maecenas faucibus mollis interdum. &nbsp; <a 

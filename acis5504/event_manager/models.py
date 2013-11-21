@@ -69,13 +69,24 @@ class Event_Level(models.Model):
 class Event_Level_Admin(admin.ModelAdmin):
     list_display = ('level', 'description')
 
+class Round(models.Model):
+	number = models.IntegerField()
+#Use the name of the model class to resolve a circular dependency
+#See http://stackoverflow.com/questions/7298326/django-models-mutual-references-between-two-classes-and-impossibility-to-use-fo
+	event = models.ForeignKey('Event')
+	matches = models.ManyToManyField('Match', related_name="matches_in_round")
+	standing = models.ForeignKey('Standing', blank="True", null="True")
+	class Meta:
+		unique_together = ('event', 'number')
+	def __unicode__(self):
+		return u'%s' % (self.number)
 class Event(models.Model):
 	event_id = models.AutoField('Event ID', primary_key=True)
 	description = models.CharField(max_length=500)
 	date = models.DateField()
 	location = models.CharField(max_length=200)
 	level = models.ForeignKey(Event_Level)
-	rounds = models.IntegerField()
+	num_rounds = models.IntegerField()
 	format = models.CharField(max_length=50)
 	head_judge = models.ForeignKey(Judge, related_name='head_judge')
 	judges = models.ManyToManyField(Judge, related_name='floor_judge', blank=True, null=True)
@@ -86,13 +97,9 @@ class Event(models.Model):
 	def save(self, *args, **kwargs):
 		super(Event, self).save()	
 		i = 1
-		while i <=  self.rounds:
+		while i <=  self.num_rounds:
 			Round.objects.get_or_create(event=self, number = i)
 			i +=1 
-class Round(models.Model):
-        number = models.IntegerField()
-        event = models.ForeignKey(Event)
-
 class EventAdmin(admin.ModelAdmin):
     list_display = ('event_id', 'date','description')
 
@@ -117,8 +124,8 @@ class Match(models.Model):
 	result = models.IntegerField(max_length=1,
 		choices=MATCH_RESULT_CHOICES)
 	match_id = models.AutoField('Match ID', primary_key=True)
-	event = models.ForeignKey(Event)
-	round = models.IntegerField()	
+	event = models.ForeignKey(Event)	
+	round = models.ForeignKey(Round)	
 	player1 = models.ForeignKey(Player, related_name='player_1')
 	player2 = models.ForeignKey(Player, related_name='player_2')
 	player1_wins = models.IntegerField()
@@ -145,11 +152,10 @@ class Match(models.Model):
 		super(Match, self).save(*args, **kwargs)  
 
 class MatchAdmin(admin.ModelAdmin):
-	list_display = ('match_id', 'event', 'round', 'player1', 'player2')
+	list_display = ('match_id', 'round', 'player1', 'player2')
 
 class Standing(models.Model):
 	player = models.ForeignKey(Player)
-	event = models.ForeignKey(Event)
 	ranking = models.IntegerField()
 	points = models.IntegerField()
 	opponent_match_win = models.IntegerField()
@@ -157,4 +163,5 @@ class Standing(models.Model):
 	opponent_game_win = models.IntegerField()
 
 class StandingAdmin(admin.ModelAdmin):
-    list_display = ('player', 'ranking', 'event')
+    list_display = ('player', 'ranking')
+
